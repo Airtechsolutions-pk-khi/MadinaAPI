@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="62a43a2f6da746daad426c1a6a295e9f" Name="Diagram1">
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Addon" Width="1.5" PointX="9.75" PointY="35.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.ApplicationInfo" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.AppSetting" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Banner" Width="1.5" PointX="3" PointY="29.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Brand" Width="1.5" PointX="0.75" PointY="31.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Category" Width="1.5" PointX="5.25" PointY="43.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Customer" Width="1.5" PointX="8.25" PointY="43" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerAddress" Width="1.5" PointX="10.5" PointY="39.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerDetail" Width="1.5" PointX="10.5" PointY="43.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerOrderDetail" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerOrder" Width="1.5" PointX="10.5" PointY="52.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerPayment" Width="1.5" PointX="10.5" PointY="47.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Delivery" Width="1.5" PointX="0.75" PointY="28.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.DeliveryAreaBrandJunc" Width="1.5" PointX="3" PointY="33.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Item" Width="1.5" PointX="7.5" PointY="36.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Location" Width="1.5" PointX="3" PointY="51.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Modifier" Width="1.5" PointX="12.75" PointY="35.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Offer" Width="1.5" PointX="9.75" PointY="30.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.OrderCheckout" Width="1.5" PointX="10.5" PointY="57.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.OrderDetail" Width="1.5" PointX="13.5" PointY="44.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.OrderDetailAddon" Width="1.5" PointX="15.75" PointY="40.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.OrderDetailModifier" Width="1.5" PointX="18.75" PointY="40.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Order" Width="1.5" PointX="8.25" PointY="51.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.PushToken" Width="1.5" PointX="5.25" PointY="53.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Status" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.SubUser" Width="1.5" PointX="5.25" PointY="37.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.TodaySpecialItem" Width="1.5" PointX="9.75" PointY="62.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.TransferOrder" Width="1.5" PointX="13.5" PointY="53.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Unit" Width="1.5" PointX="5.25" PointY="33.875" IsExpanded="true" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_OrderDetailAddon_Addons" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Banners_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Category_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Customer_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_DeliveryAreaBrandJunc_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Locations_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Modifiers_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Offers_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_SubUser_Brand" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Category_Locations" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Items_Items" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Customer_Locations" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_CustomerAddresses_Customer" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_CustomerDetail_Customer" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_CustomerPayment_Customer" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_CustomerOrders_Orders" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_DeliveryAreaBrandJunc_DeliveryAreaBrandJunc" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Items_Unit" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Offers_Items" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_OrderDetail_Items" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_TodaySpecialItems_Items" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Orders_Locations" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_PushToken_Locations" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_SubUser_Locations" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_TransferOrder_Locations" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_TransferOrder_Locations1" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_OrderDetailModifier_Modifiers" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_OrderCheckout_Orders" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_OrderDetail_Orders" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_OrderDetailAddon_OrderDetail" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_OrderDetailModifier_OrderDetail" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Orders_SubUser" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Orders_SubUser1" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_TransferOrder_Orders" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.ItemAddonsJunc" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.ItemModifiersJunc" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
