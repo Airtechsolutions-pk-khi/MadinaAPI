@@ -50,6 +50,8 @@ namespace DAL.DBEntities
         public string Currency { get; set; }
         public Nullable<double> Discounts { get; set; }
         public Nullable<double> Tax { get; set; }
+        public Nullable<int> IsPickupAllowed { get; set; }
+        public Nullable<int> IsDeliveryAllowed { get; set; }
     
         public virtual Brand Brand { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

@@ -23,7 +23,7 @@ namespace MadinaAPI.Controllers
         public void PushNotification()
         {
             try
-            {
+            {                
                 var applicationID = "AAAArEaNSXc:APA91bHaIHE6S4eXqbWpu8sRAvU9TxTkMj-q-bbEW6FMUp3LoEBeexRz3sNtIU7qJBrBkddJRwPD4zDCSYN6V6ygFGzNVmw1kuQEIxvVvqW2yCbPFN24IDSCLdyB_kXnBaCR_3e7zf_u";
                 var senderId = "739918039415";
                 //var senderId = "42928891220";

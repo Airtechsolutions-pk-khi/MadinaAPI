@@ -31,6 +31,7 @@ namespace DAL.DBEntities
         public Nullable<int> StatusID { get; set; }
         public Nullable<bool> IsFeatured { get; set; }
         public Nullable<double> Calories { get; set; }
+        public Nullable<bool> IsApplyDiscount { get; set; }
         public string CategoryName { get; set; }
     }
 }

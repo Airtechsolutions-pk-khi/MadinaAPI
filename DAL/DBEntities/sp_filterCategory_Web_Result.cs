@@ -11,29 +11,26 @@ namespace DAL.DBEntities
 {
     using System;
     
-    public partial class sp_GetItembyID_Admin_Result
+    public partial class sp_filterCategory_Web_Result
     {
-        public int ItemID { get; set; }
-        public Nullable<int> CategoryID { get; set; }
-        public Nullable<int> UnitID { get; set; }
+        public int CategoryID { get; set; }
         public string Name { get; set; }
         public string ArabicName { get; set; }
         public string Description { get; set; }
         public string Image { get; set; }
-        public string Barcode { get; set; }
-        public string SKU { get; set; }
-        public Nullable<int> DisplayOrder { get; set; }
-        public Nullable<double> Price { get; set; }
-        public Nullable<double> Cost { get; set; }
-        public string ItemType { get; set; }
+        public int DisplayOrder { get; set; }
         public string LastUpdatedBy { get; set; }
         public Nullable<System.DateTime> LastUpdatedDate { get; set; }
-        public Nullable<int> StatusID { get; set; }
-        public Nullable<bool> IsFeatured { get; set; }
-        public Nullable<double> Calories { get; set; }
+        public Nullable<int> LocationID { get; set; }
+        public Nullable<int> BrandID { get; set; }
+        public int ItemID { get; set; }
+        public string ItemName { get; set; }
+        public Nullable<int> Expr1 { get; set; }
+        public Nullable<double> Price { get; set; }
+        public Nullable<double> Cost { get; set; }
         public Nullable<bool> IsApplyDiscount { get; set; }
-        public string CategoryName { get; set; }
-        public string Modifiers { get; set; }
-        public string Addons { get; set; }
+        public string ItemImage { get; set; }
+        public Nullable<int> StatusID { get; set; }
+        public Nullable<int> Expr2 { get; set; }
     }
 }

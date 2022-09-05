@@ -237,6 +237,7 @@
           <ScalarProperty Name="StatusID" ColumnName="StatusID" />
           <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
           <ScalarProperty Name="Calories" ColumnName="Calories" />
+          <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -267,6 +268,8 @@
           <ScalarProperty Name="Currency" ColumnName="Currency" />
           <ScalarProperty Name="Discounts" ColumnName="Discounts" />
           <ScalarProperty Name="Tax" ColumnName="Tax" />
+          <ScalarProperty Name="IsPickupAllowed" ColumnName="IsPickupAllowed" />
+          <ScalarProperty Name="IsDeliveryAllowed" ColumnName="IsDeliveryAllowed" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -403,6 +406,20 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="Reveiws">
+      <EntityTypeMapping TypeName="db_a861ba_madinaModel.Reveiw">
+        <MappingFragment StoreEntitySet="Reveiws">
+          <ScalarProperty Name="ReviewID" ColumnName="ReviewID" />
+          <ScalarProperty Name="Stars" ColumnName="Stars" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Contact" ColumnName="Contact" />
+          <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+          <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="Status">
       <EntityTypeMapping TypeName="db_a861ba_madinaModel.Status">
         <MappingFragment StoreEntitySet="Status">
@@ -513,6 +530,56 @@
     <FunctionImportMapping FunctionImportName="sp_DeleteModifier" FunctionName="db_a861ba_madinaModel.Store.sp_DeleteModifier" />
     <FunctionImportMapping FunctionImportName="sp_Deleteoffers" FunctionName="db_a861ba_madinaModel.Store.sp_Deleteoffers" />
     <FunctionImportMapping FunctionImportName="sp_DeleteTodaySpecial_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_DeleteTodaySpecial_Admin" />
+    <FunctionImportMapping FunctionImportName="sp_filterCategory_Web" FunctionName="db_a861ba_madinaModel.Store.sp_filterCategory_Web">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_filterCategory_Web_Result">
+          <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Image" ColumnName="Image" />
+          <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+          <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+          <ScalarProperty Name="BrandID" ColumnName="BrandID" />
+          <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+          <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+          <ScalarProperty Name="Expr1" ColumnName="Expr1" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+          <ScalarProperty Name="ItemImage" ColumnName="ItemImage" />
+          <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+          <ScalarProperty Name="Expr2" ColumnName="Expr2" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_filterProduct_Web" FunctionName="db_a861ba_madinaModel.Store.sp_filterProduct_Web">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_filterProduct_Web_Result">
+          <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+          <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+          <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Image" ColumnName="Image" />
+          <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+          <ScalarProperty Name="SKU" ColumnName="SKU" />
+          <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+          <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+          <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
+          <ScalarProperty Name="Calories" ColumnName="Calories" />
+          <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
     <FunctionImportMapping FunctionImportName="sp_getAddons" FunctionName="db_a861ba_madinaModel.Store.sp_getAddons">
       <ResultMapping>
         <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_getAddons_Result">
@@ -764,6 +831,24 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_GetCategoryList_Web" FunctionName="db_a861ba_madinaModel.Store.sp_GetCategoryList_Web">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_GetCategoryList_Web_Result">
+          <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Image" ColumnName="Image" />
+          <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+          <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+          <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+          <ScalarProperty Name="BrandID" ColumnName="BrandID" />
+          <ScalarProperty Name="Row_Counter" ColumnName="Row_Counter" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
     <FunctionImportMapping FunctionImportName="sp_getCustomer" FunctionName="db_a861ba_madinaModel.Store.sp_getCustomer">
       <ResultMapping>
         <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_getCustomer_Result">
@@ -883,6 +968,7 @@
           <ScalarProperty Name="StatusID" ColumnName="StatusID" />
           <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
           <ScalarProperty Name="Calories" ColumnName="Calories" />
+          <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
           <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
           <ScalarProperty Name="Modifiers" ColumnName="Modifiers" />
           <ScalarProperty Name="Addons" ColumnName="Addons" />
@@ -910,6 +996,7 @@
           <ScalarProperty Name="StatusID" ColumnName="StatusID" />
           <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
           <ScalarProperty Name="Calories" ColumnName="Calories" />
+          <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
           <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
         </ComplexTypeMapping>
       </ResultMapping>
@@ -950,6 +1037,8 @@
           <ScalarProperty Name="Currency" ColumnName="Currency" />
           <ScalarProperty Name="Discounts" ColumnName="Discounts" />
           <ScalarProperty Name="Tax" ColumnName="Tax" />
+          <ScalarProperty Name="IsPickupAllowed" ColumnName="IsPickupAllowed" />
+          <ScalarProperty Name="IsDeliveryAllowed" ColumnName="IsDeliveryAllowed" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
@@ -980,6 +1069,8 @@
           <ScalarProperty Name="Currency" ColumnName="Currency" />
           <ScalarProperty Name="Discounts" ColumnName="Discounts" />
           <ScalarProperty Name="Tax" ColumnName="Tax" />
+          <ScalarProperty Name="IsPickupAllowed" ColumnName="IsPickupAllowed" />
+          <ScalarProperty Name="IsDeliveryAllowed" ColumnName="IsDeliveryAllowed" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
@@ -1010,6 +1101,8 @@
           <ScalarProperty Name="Currency" ColumnName="Currency" />
           <ScalarProperty Name="Discounts" ColumnName="Discounts" />
           <ScalarProperty Name="Tax" ColumnName="Tax" />
+          <ScalarProperty Name="IsPickupAllowed" ColumnName="IsPickupAllowed" />
+          <ScalarProperty Name="IsDeliveryAllowed" ColumnName="IsDeliveryAllowed" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
@@ -1059,6 +1152,28 @@
           <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
           <ScalarProperty Name="StatusID" ColumnName="StatusID" />
           <ScalarProperty Name="BrandID" ColumnName="BrandID" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_GetMyOrderDetails_Web" FunctionName="db_a861ba_madinaModel.Store.sp_GetMyOrderDetails_Web">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_GetMyOrderDetails_Web_Result">
+          <ScalarProperty Name="CustomerOrderID" ColumnName="CustomerOrderID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+          <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+          <ScalarProperty Name="LocationURL" ColumnName="LocationURL" />
+          <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+          <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+          <ScalarProperty Name="AddressType" ColumnName="AddressType" />
+          <ScalarProperty Name="AddressNickName" ColumnName="AddressNickName" />
+          <ScalarProperty Name="DeliveryArea" ColumnName="DeliveryArea" />
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
@@ -1122,6 +1237,31 @@
         </ComplexTypeMapping>
       </ResultMapping>
     </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_GetProducts_Web" FunctionName="db_a861ba_madinaModel.Store.sp_GetProducts_Web">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_GetProducts_Web_Result">
+          <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+          <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+          <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Image" ColumnName="Image" />
+          <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+          <ScalarProperty Name="SKU" ColumnName="SKU" />
+          <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+          <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+          <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
+          <ScalarProperty Name="Calories" ColumnName="Calories" />
+          <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
     <FunctionImportMapping FunctionImportName="sp_insertAddon_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_insertAddon_Admin" />
     <FunctionImportMapping FunctionImportName="sp_insertAppInfo_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_insertAppInfo_Admin" />
     <FunctionImportMapping FunctionImportName="sp_insertAppsetting_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_insertAppsetting_Admin" />
@@ -1138,6 +1278,132 @@
     <FunctionImportMapping FunctionImportName="sp_insertLocation_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_insertLocation_Admin" />
     <FunctionImportMapping FunctionImportName="sp_insertModifier_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_insertModifier_Admin" />
     <FunctionImportMapping FunctionImportName="sp_insertOffers_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_insertOffers_Admin" />
+    <FunctionImportMapping FunctionImportName="sp_InsertOrder_Web" FunctionName="db_a861ba_madinaModel.Store.sp_InsertOrder_Web" />
+    <FunctionImportMapping FunctionImportName="sp_InsertOrderCheckout_Web" FunctionName="db_a861ba_madinaModel.Store.sp_InsertOrderCheckout_Web" />
+    <FunctionImportMapping FunctionImportName="sp_InsertOrderDetail_Web" FunctionName="db_a861ba_madinaModel.Store.sp_InsertOrderDetail_Web" />
+    <FunctionImportMapping FunctionImportName="sp_InsertReview_Web" FunctionName="db_a861ba_madinaModel.Store.sp_InsertReview_Web" />
+    <FunctionImportMapping FunctionImportName="sp_itemList" FunctionName="db_a861ba_madinaModel.Store.sp_itemList">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_itemList_Result">
+          <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+          <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+          <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Image" ColumnName="Image" />
+          <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+          <ScalarProperty Name="SKU" ColumnName="SKU" />
+          <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+          <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+          <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
+          <ScalarProperty Name="Calories" ColumnName="Calories" />
+          <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+          <ScalarProperty Name="Stars" ColumnName="Stars" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_itemListselected" FunctionName="db_a861ba_madinaModel.Store.sp_itemListselected">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_itemListselected_Result">
+          <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+          <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+          <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Image" ColumnName="Image" />
+          <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+          <ScalarProperty Name="SKU" ColumnName="SKU" />
+          <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+          <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+          <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
+          <ScalarProperty Name="Calories" ColumnName="Calories" />
+          <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+          <ScalarProperty Name="Stars" ColumnName="Stars" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_itemListselected_Web" FunctionName="db_a861ba_madinaModel.Store.sp_itemListselected_Web">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_itemListselected_Web_Result">
+          <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+          <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+          <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Image" ColumnName="Image" />
+          <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+          <ScalarProperty Name="SKU" ColumnName="SKU" />
+          <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+          <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+          <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
+          <ScalarProperty Name="Calories" ColumnName="Calories" />
+          <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+          <ScalarProperty Name="Stars" ColumnName="Stars" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_login_Web" FunctionName="db_a861ba_madinaModel.Store.sp_login_Web">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_login_Web_Result">
+          <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+          <ScalarProperty Name="FullName" ColumnName="FullName" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+          <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+          <ScalarProperty Name="Image" ColumnName="Image" />
+          <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+          <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+          <ScalarProperty Name="BrandID" ColumnName="BrandID" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_ProductDetails_Web" FunctionName="db_a861ba_madinaModel.Store.sp_ProductDetails_Web">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_ProductDetails_Web_Result">
+          <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+          <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+          <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Image" ColumnName="Image" />
+          <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+          <ScalarProperty Name="SKU" ColumnName="SKU" />
+          <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+          <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+          <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+          <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+          <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
+          <ScalarProperty Name="Calories" ColumnName="Calories" />
+          <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+          <ScalarProperty Name="Stars" ColumnName="Stars" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="sp_register_Web" FunctionName="db_a861ba_madinaModel.Store.sp_register_Web" />
     <FunctionImportMapping FunctionImportName="sp_rptSalesCategorywiseAdmin" FunctionName="db_a861ba_madinaModel.Store.sp_rptSalesCategorywiseAdmin">
       <ResultMapping>
         <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_rptSalesCategorywiseAdmin_Result">

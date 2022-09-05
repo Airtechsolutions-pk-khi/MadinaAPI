@@ -19,6 +19,7 @@ namespace DAL.DBEntities
         {
             this.Offers = new HashSet<Offer>();
             this.OrderDetails = new HashSet<OrderDetail>();
+            this.Reveiws = new HashSet<Reveiw>();
             this.TodaySpecialItems = new HashSet<TodaySpecialItem>();
             this.Addons = new HashSet<Addon>();
             this.Modifiers = new HashSet<Modifier>();
@@ -42,6 +43,7 @@ namespace DAL.DBEntities
         public Nullable<int> StatusID { get; set; }
         public Nullable<bool> IsFeatured { get; set; }
         public Nullable<double> Calories { get; set; }
+        public Nullable<bool> IsApplyDiscount { get; set; }
     
         public virtual Category Category { get; set; }
         public virtual Unit Unit { get; set; }
@@ -49,6 +51,8 @@ namespace DAL.DBEntities
         public virtual ICollection<Offer> Offers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Reveiw> Reveiws { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TodaySpecialItem> TodaySpecialItems { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

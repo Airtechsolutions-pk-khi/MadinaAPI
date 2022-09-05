@@ -245,13 +245,20 @@ namespace BAL.Repositories
         }
         public RspOrderPunch OrderPunch(OrdersBLL obj)
         {
-
             RspOrderPunch rsp;
-
             try
             {
                 var currDate = DateTime.UtcNow.AddMinutes(300);
                 var isAllowcheckout = true;
+                string pram = "26";
+                if (!obj.AppVersion.Equals(pram))
+                {
+                    rsp = new RspOrderPunch();
+                    rsp.status = 1006;
+                    rsp.description = "Your App Version is not Updated";
+                    rsp.OrderID = 0;
+                    return rsp;
+                }
                 if (obj.OrderDetails.Count == 0)
                 {
                     rsp = new RspOrderPunch();
@@ -268,9 +275,32 @@ namespace BAL.Repositories
                     {
                         if (settings.Opentime != null && settings.Closetime != null)
                         {
-                            isAllowcheckout = int.Parse(Convert.ToDateTime(currDate).ToString("HHmm")) > int.Parse(Convert.ToDateTime(settings.Opentime).ToString("HHmm"))
-                                && int.Parse(Convert.ToDateTime(currDate).ToString("HHmm")) < int.Parse(Convert.ToDateTime(settings.Closetime).ToString("HHmm"))
-                                ? true : false;
+                            var t1 = int.Parse(TimeSpan.Parse(settings.Opentime).ToString("hhmm"));
+                            var t2 = 2359;
+                            var t3 = 0001;
+                            var t4 = int.Parse(TimeSpan.Parse(settings.Closetime).ToString("hhmm"));
+                            var currTimeint = int.Parse(Convert.ToDateTime(currDate).ToString("HHmm"));
+                            isAllowcheckout = (currTimeint > t1 && currTimeint < t2) || (currTimeint > t3 && currTimeint < t4) ? true : false;
+
+                            //isAllowcheckout = int.Parse(Convert.ToDateTime(currDate).ToString("HHmm")) > int.Parse(Convert.ToDateTime(settings.Opentime).ToString("HHmm"))
+                            //    && int.Parse(Convert.ToDateTime(currDate).ToString("HHmm")) < int.Parse(Convert.ToDateTime(settings.Closetime).ToString("HHmm"))
+                            //    ? true : false;
+                        }
+                        if (settings.IsPickupAllowed != 1 && obj.OrderType == "2")
+                        {
+                            rsp = new RspOrderPunch();
+                            rsp.status = (int)eStatus.Exception;
+                            rsp.description = "Pickup is temporary closed!";
+                            rsp.OrderID = 0;
+                            return rsp;
+                        }
+                        if (settings.IsDeliveryAllowed != 1 && obj.OrderType == "1")
+                        {
+                            rsp = new RspOrderPunch();
+                            rsp.status = (int)eStatus.Exception;
+                            rsp.description = "Delivery is temporary closed!";
+                            rsp.OrderID = 0;
+                            return rsp;
                         }
                     }
                     catch { }

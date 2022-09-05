@@ -249,10 +249,12 @@
     <Property Name="StatusID" Type="Int32" />
     <Property Name="IsFeatured" Type="Boolean" />
     <Property Name="Calories" Type="Double" />
+    <Property Name="IsApplyDiscount" Type="Boolean" />
     <NavigationProperty Name="Category" Relationship="Self.FK_Items_Items" FromRole="Items" ToRole="Category" />
     <NavigationProperty Name="Unit" Relationship="Self.FK_Items_Unit" FromRole="Items" ToRole="Unit" />
     <NavigationProperty Name="Offers" Relationship="Self.FK_Offers_Items" FromRole="Items" ToRole="Offers" />
     <NavigationProperty Name="OrderDetails" Relationship="Self.FK_OrderDetail_Items" FromRole="Items" ToRole="OrderDetail" />
+    <NavigationProperty Name="Reveiws" Relationship="Self.FK_Reveiws_Item" FromRole="Items" ToRole="Reveiws" />
     <NavigationProperty Name="TodaySpecialItems" Relationship="Self.FK_TodaySpecialItems_Items" FromRole="Items" ToRole="TodaySpecialItems" />
     <NavigationProperty Name="Addons" Relationship="Self.ItemAddonsJunc" FromRole="Items" ToRole="Addons" />
     <NavigationProperty Name="Modifiers" Relationship="Self.ItemModifiersJunc" FromRole="Items" ToRole="Modifiers" />
@@ -285,6 +287,8 @@
     <Property Name="Currency" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
     <Property Name="Discounts" Type="Double" />
     <Property Name="Tax" Type="Double" />
+    <Property Name="IsPickupAllowed" Type="Int32" />
+    <Property Name="IsDeliveryAllowed" Type="Int32" />
     <NavigationProperty Name="Brand" Relationship="Self.FK_Locations_Brand" FromRole="Locations" ToRole="Brand" />
     <NavigationProperty Name="Categories" Relationship="Self.FK_Category_Locations" FromRole="Locations" ToRole="Category" />
     <NavigationProperty Name="Customers" Relationship="Self.FK_Customer_Locations" FromRole="Locations" ToRole="Customer" />
@@ -440,6 +444,20 @@
     <Property Name="StatusID" Type="Int32" />
     <Property Name="Device" Type="Int32" />
     <NavigationProperty Name="Location" Relationship="Self.FK_PushToken_Locations" FromRole="PushToken" ToRole="Locations" />
+  </EntityType>
+  <EntityType Name="Reveiw">
+    <Key>
+      <PropertyRef Name="ReviewID" />
+    </Key>
+    <Property Name="ReviewID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Stars" Type="Int32" />
+    <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Contact" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="StatusID" Type="Int32" />
+    <Property Name="ItemID" Type="Int32" />
+    <NavigationProperty Name="Item" Relationship="Self.FK_Reveiws_Item" FromRole="Reveiws" ToRole="Items" />
   </EntityType>
   <EntityType Name="Status">
     <Key>
@@ -748,6 +766,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_Reveiws_Item">
+    <End Role="Items" Type="Self.Item" Multiplicity="0..1" />
+    <End Role="Reveiws" Type="Self.Reveiw" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Items">
+        <PropertyRef Name="ItemID" />
+      </Principal>
+      <Dependent Role="Reveiws">
+        <PropertyRef Name="ItemID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_TodaySpecialItems_Items">
     <End Role="Items" Type="Self.Item" Multiplicity="0..1" />
     <End Role="TodaySpecialItems" Type="Self.TodaySpecialItem" Multiplicity="*" />
@@ -949,6 +979,7 @@
     <EntitySet Name="OrderDetailModifiers" EntityType="Self.OrderDetailModifier" />
     <EntitySet Name="Orders" EntityType="Self.Order" />
     <EntitySet Name="PushTokens" EntityType="Self.PushToken" />
+    <EntitySet Name="Reveiws" EntityType="Self.Reveiw" />
     <EntitySet Name="Status" EntityType="Self.Status" />
     <EntitySet Name="SubUsers" EntityType="Self.SubUser" />
     <EntitySet Name="TodaySpecialItems" EntityType="Self.TodaySpecialItem" />
@@ -1033,6 +1064,10 @@
     <AssociationSet Name="FK_OrderDetail_Items" Association="Self.FK_OrderDetail_Items">
       <End Role="Items" EntitySet="Items" />
       <End Role="OrderDetail" EntitySet="OrderDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Reveiws_Item" Association="Self.FK_Reveiws_Item">
+      <End Role="Items" EntitySet="Items" />
+      <End Role="Reveiws" EntitySet="Reveiws" />
     </AssociationSet>
     <AssociationSet Name="FK_TodaySpecialItems_Items" Association="Self.FK_TodaySpecialItems_Items">
       <End Role="Items" EntitySet="Items" />
@@ -1147,6 +1182,13 @@
       <Parameter Name="BrandID" Mode="In" Type="Int32" />
       <Parameter Name="Items" Mode="In" Type="String" />
     </FunctionImport>
+    <FunctionImport Name="sp_filterCategory_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_filterCategory_Web_Result)">
+      <Parameter Name="Category" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_filterProduct_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_filterProduct_Web_Result)">
+      <Parameter Name="Category" Mode="In" Type="String" />
+      <Parameter Name="Searchtxt" Mode="In" Type="String" />
+    </FunctionImport>
     <FunctionImport Name="sp_getAddons" ReturnType="Collection(db_a861ba_madinaModel.sp_getAddons_Result)">
       <Parameter Name="brandid" Mode="In" Type="Int32" />
     </FunctionImport>
@@ -1190,6 +1232,7 @@
       <Parameter Name="id" Mode="In" Type="Int32" />
       <Parameter Name="brandid" Mode="In" Type="Int32" />
     </FunctionImport>
+    <FunctionImport Name="sp_GetCategoryList_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_GetCategoryList_Web_Result)" />
     <FunctionImport Name="sp_getCustomer" ReturnType="Collection(db_a861ba_madinaModel.sp_getCustomer_Result)">
       <Parameter Name="brandid" Mode="In" Type="Int32" />
     </FunctionImport>
@@ -1240,6 +1283,9 @@
       <Parameter Name="id" Mode="In" Type="Int32" />
       <Parameter Name="brandid" Mode="In" Type="Int32" />
     </FunctionImport>
+    <FunctionImport Name="sp_GetMyOrderDetails_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_GetMyOrderDetails_Web_Result)">
+      <Parameter Name="OrderID" Mode="In" Type="Int32" />
+    </FunctionImport>
     <FunctionImport Name="sp_getOffers" ReturnType="Collection(db_a861ba_madinaModel.sp_getOffers_Result)">
       <Parameter Name="brandid" Mode="In" Type="Int32" />
     </FunctionImport>
@@ -1250,6 +1296,7 @@
     <FunctionImport Name="sp_GetOrdersbyID_Admin" ReturnType="Collection(db_a861ba_madinaModel.sp_GetOrdersbyID_Admin_Result)">
       <Parameter Name="OrderID" Mode="In" Type="Int32" />
     </FunctionImport>
+    <FunctionImport Name="sp_GetProducts_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_GetProducts_Web_Result)" />
     <FunctionImport Name="sp_insertAddon_Admin">
       <Parameter Name="Name" Mode="In" Type="String" />
       <Parameter Name="ArabicName" Mode="In" Type="String" />
@@ -1358,6 +1405,7 @@
       <Parameter Name="IsFeatured" Mode="In" Type="Boolean" />
       <Parameter Name="Calories" Mode="In" Type="Double" />
       <Parameter Name="ItemID" Mode="In" Type="Int32" />
+      <Parameter Name="IsApplyDiscount" Mode="In" Type="Boolean" />
     </FunctionImport>
     <FunctionImport Name="sp_insertItemAddons_Admin">
       <Parameter Name="Addons" Mode="In" Type="String" />
@@ -1421,6 +1469,89 @@
       <Parameter Name="LastUpdatedDate" Mode="In" Type="DateTime" />
       <Parameter Name="BrandID" Mode="In" Type="Int32" />
       <Parameter Name="OfferID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_InsertOrder_Web" ReturnType="Collection(Int32)">
+      <Parameter Name="OrderNo" Mode="In" Type="Int32" />
+      <Parameter Name="CustomerID" Mode="In" Type="Int32" />
+      <Parameter Name="OrderType" Mode="In" Type="String" />
+      <Parameter Name="OrderDate" Mode="In" Type="DateTime" />
+      <Parameter Name="StatusID" Mode="In" Type="Int32" />
+      <Parameter Name="SessionID" Mode="In" Type="String" />
+      <Parameter Name="OrderTakerID" Mode="In" Type="Int32" />
+      <Parameter Name="DeliverUserID" Mode="In" Type="Int32" />
+      <Parameter Name="LastUpdatedBy" Mode="In" Type="Int32" />
+      <Parameter Name="LastUpdatedDT" Mode="In" Type="DateTime" />
+      <Parameter Name="LocationID" Mode="In" Type="Int32" />
+      <Parameter Name="OrderPreparedDate" Mode="In" Type="DateTime" />
+      <Parameter Name="OrderOFDDate" Mode="In" Type="DateTime" />
+      <Parameter Name="OrderDoneDate" Mode="In" Type="DateTime" />
+      <Parameter Name="Remarks" Mode="In" Type="String" />
+      <Parameter Name="Name" Mode="In" Type="String" />
+      <Parameter Name="Email" Mode="In" Type="String" />
+      <Parameter Name="Mobile" Mode="In" Type="String" />
+      <Parameter Name="Description" Mode="In" Type="String" />
+      <Parameter Name="Address" Mode="In" Type="String" />
+      <Parameter Name="Longitude" Mode="In" Type="String" />
+      <Parameter Name="Latitude" Mode="In" Type="String" />
+      <Parameter Name="LocationURL" Mode="In" Type="String" />
+      <Parameter Name="LastUpdatedDate" Mode="In" Type="DateTime" />
+      <Parameter Name="AddressType" Mode="In" Type="String" />
+      <Parameter Name="AddressNickName" Mode="In" Type="String" />
+      <Parameter Name="DeliveryArea" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_InsertOrderCheckout_Web" ReturnType="Collection(Int32)">
+      <Parameter Name="OrderID" Mode="In" Type="Int32" />
+      <Parameter Name="PaymentMode" Mode="In" Type="Int32" />
+      <Parameter Name="AmountPaid" Mode="In" Type="Double" />
+      <Parameter Name="AmountTotal" Mode="In" Type="Double" />
+      <Parameter Name="GrandTotal" Mode="In" Type="Double" />
+      <Parameter Name="ServiceCharges" Mode="In" Type="Double" />
+      <Parameter Name="Tax" Mode="In" Type="Double" />
+      <Parameter Name="CheckoutDate" Mode="In" Type="DateTime" />
+      <Parameter Name="SessionID" Mode="In" Type="String" />
+      <Parameter Name="StatusID" Mode="In" Type="Int32" />
+      <Parameter Name="LastUpdateBy" Mode="In" Type="Int32" />
+      <Parameter Name="LastUpdatedDate" Mode="In" Type="DateTime" />
+      <Parameter Name="DiscountAmount" Mode="In" Type="Double" />
+    </FunctionImport>
+    <FunctionImport Name="sp_InsertOrderDetail_Web" ReturnType="Collection(Int32)">
+      <Parameter Name="OrderID" Mode="In" Type="Int32" />
+      <Parameter Name="ItemID" Mode="In" Type="Int32" />
+      <Parameter Name="Quantity" Mode="In" Type="Double" />
+      <Parameter Name="Price" Mode="In" Type="Double" />
+      <Parameter Name="Cost" Mode="In" Type="Double" />
+      <Parameter Name="OrderMode" Mode="In" Type="String" />
+      <Parameter Name="StatusID" Mode="In" Type="Int32" />
+      <Parameter Name="LastUpdateBy" Mode="In" Type="Int32" />
+      <Parameter Name="LastUpdateDT" Mode="In" Type="DateTime" />
+    </FunctionImport>
+    <FunctionImport Name="sp_InsertReview_Web" ReturnType="Collection(Decimal)">
+      <Parameter Name="Name" Mode="In" Type="String" />
+      <Parameter Name="Description" Mode="In" Type="String" />
+      <Parameter Name="Contact" Mode="In" Type="String" />
+      <Parameter Name="Email" Mode="In" Type="String" />
+      <Parameter Name="Stars" Mode="In" Type="Int32" />
+      <Parameter Name="StatusID" Mode="In" Type="Int32" />
+      <Parameter Name="ItemID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_itemList" ReturnType="Collection(db_a861ba_madinaModel.sp_itemList_Result)" />
+    <FunctionImport Name="sp_itemListselected" ReturnType="Collection(db_a861ba_madinaModel.sp_itemListselected_Result)" />
+    <FunctionImport Name="sp_itemListselected_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_itemListselected_Web_Result)" />
+    <FunctionImport Name="sp_login_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_login_Web_Result)">
+      <Parameter Name="email" Mode="In" Type="String" />
+      <Parameter Name="password" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_ProductDetails_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_ProductDetails_Web_Result)">
+      <Parameter Name="ItemID" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_register_Web">
+      <Parameter Name="FullName" Mode="In" Type="String" />
+      <Parameter Name="Email" Mode="In" Type="String" />
+      <Parameter Name="Mobile" Mode="In" Type="String" />
+      <Parameter Name="StatusID" Mode="In" Type="Int32" />
+      <Parameter Name="LastUpdatedBy" Mode="In" Type="String" />
+      <Parameter Name="LastUpdatedDate" Mode="In" Type="DateTime" />
+      <Parameter Name="Password" Mode="In" Type="String" />
     </FunctionImport>
     <FunctionImport Name="sp_rptSalesCategorywiseAdmin" ReturnType="Collection(db_a861ba_madinaModel.sp_rptSalesCategorywiseAdmin_Result)">
       <Parameter Name="brandid" Mode="In" Type="Int32" />
@@ -1591,6 +1722,7 @@
       <Parameter Name="IsFeatured" Mode="In" Type="Boolean" />
       <Parameter Name="Calories" Mode="In" Type="Double" />
       <Parameter Name="ItemID" Mode="In" Type="Int32" />
+      <Parameter Name="IsApplyDiscount" Mode="In" Type="Boolean" />
     </FunctionImport>
     <FunctionImport Name="sp_updateLocation_Admin">
       <Parameter Name="Name" Mode="In" Type="String" />
@@ -1667,6 +1799,48 @@
     <Property Type="Int64" Name="BusinessKey" Nullable="true" />
     <Property Type="String" Name="LastUpdateBy" Nullable="true" MaxLength="150" />
     <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+  </ComplexType>
+  <ComplexType Name="sp_filterCategory_Web_Result">
+    <Property Type="Int32" Name="CategoryID" Nullable="false" />
+    <Property Type="String" Name="Name" Nullable="true" MaxLength="300" />
+    <Property Type="String" Name="ArabicName" Nullable="true" MaxLength="300" />
+    <Property Type="String" Name="Description" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="Image" Nullable="true" />
+    <Property Type="Int32" Name="DisplayOrder" Nullable="false" />
+    <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="LocationID" Nullable="true" />
+    <Property Type="Int32" Name="BrandID" Nullable="true" />
+    <Property Type="Int32" Name="ItemID" Nullable="false" />
+    <Property Type="String" Name="ItemName" Nullable="true" />
+    <Property Type="Int32" Name="Expr1" Nullable="true" />
+    <Property Type="Double" Name="Price" Nullable="true" />
+    <Property Type="Double" Name="Cost" Nullable="true" />
+    <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
+    <Property Type="String" Name="ItemImage" Nullable="true" />
+    <Property Type="Int32" Name="StatusID" Nullable="true" />
+    <Property Type="Int32" Name="Expr2" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_filterProduct_Web_Result">
+    <Property Type="Int32" Name="ItemID" Nullable="false" />
+    <Property Type="Int32" Name="CategoryID" Nullable="true" />
+    <Property Type="Int32" Name="UnitID" Nullable="true" />
+    <Property Type="String" Name="Name" Nullable="true" />
+    <Property Type="String" Name="ArabicName" Nullable="true" />
+    <Property Type="String" Name="Description" Nullable="true" />
+    <Property Type="String" Name="Image" Nullable="true" />
+    <Property Type="String" Name="Barcode" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="DisplayOrder" Nullable="true" />
+    <Property Type="Double" Name="Price" Nullable="true" />
+    <Property Type="Double" Name="Cost" Nullable="true" />
+    <Property Type="String" Name="ItemType" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="StatusID" Nullable="true" />
+    <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
+    <Property Type="Double" Name="Calories" Nullable="true" />
+    <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
   </ComplexType>
   <ComplexType Name="sp_getAddons_Result">
     <Property Type="Int32" Name="AddonID" Nullable="false" />
@@ -1862,6 +2036,20 @@
     <Property Type="Int32" Name="LocationID" Nullable="true" />
     <Property Type="Int32" Name="BrandID" Nullable="true" />
   </ComplexType>
+  <ComplexType Name="sp_GetCategoryList_Web_Result">
+    <Property Type="Int32" Name="CategoryID" Nullable="false" />
+    <Property Type="String" Name="Name" Nullable="true" MaxLength="300" />
+    <Property Type="String" Name="ArabicName" Nullable="true" MaxLength="300" />
+    <Property Type="String" Name="Description" Nullable="true" MaxLength="100" />
+    <Property Type="String" Name="Image" Nullable="true" />
+    <Property Type="Int32" Name="DisplayOrder" Nullable="false" />
+    <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="StatusID" Nullable="true" />
+    <Property Type="Int32" Name="LocationID" Nullable="true" />
+    <Property Type="Int32" Name="BrandID" Nullable="true" />
+    <Property Type="Int64" Name="Row_Counter" Nullable="true" />
+  </ComplexType>
   <ComplexType Name="sp_getCustomer_Result">
     <Property Type="Int32" Name="CustomerID" Nullable="false" />
     <Property Type="String" Name="FullName" Nullable="true" MaxLength="200" />
@@ -1955,6 +2143,7 @@
     <Property Type="Int32" Name="StatusID" Nullable="true" />
     <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
     <Property Type="Double" Name="Calories" Nullable="true" />
+    <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
     <Property Type="String" Name="CategoryName" Nullable="true" MaxLength="300" />
     <Property Type="String" Name="Modifiers" Nullable="true" MaxLength="250" />
     <Property Type="String" Name="Addons" Nullable="true" MaxLength="250" />
@@ -1978,6 +2167,7 @@
     <Property Type="Int32" Name="StatusID" Nullable="true" />
     <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
     <Property Type="Double" Name="Calories" Nullable="true" />
+    <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
     <Property Type="String" Name="CategoryName" Nullable="true" MaxLength="300" />
   </ComplexType>
   <ComplexType Name="sp_GetItemSettingsTitle_Admin_Result">
@@ -2009,6 +2199,8 @@
     <Property Type="String" Name="Currency" Nullable="true" MaxLength="50" />
     <Property Type="Double" Name="Discounts" Nullable="true" />
     <Property Type="Double" Name="Tax" Nullable="true" />
+    <Property Type="Int32" Name="IsPickupAllowed" Nullable="true" />
+    <Property Type="Int32" Name="IsDeliveryAllowed" Nullable="true" />
   </ComplexType>
   <ComplexType Name="sp_GetLocationID_Admin_Result">
     <Property Type="Int32" Name="LocationID" Nullable="false" />
@@ -2035,6 +2227,8 @@
     <Property Type="String" Name="Currency" Nullable="true" MaxLength="50" />
     <Property Type="Double" Name="Discounts" Nullable="true" />
     <Property Type="Double" Name="Tax" Nullable="true" />
+    <Property Type="Int32" Name="IsPickupAllowed" Nullable="true" />
+    <Property Type="Int32" Name="IsDeliveryAllowed" Nullable="true" />
   </ComplexType>
   <ComplexType Name="sp_getLocations_api_Result">
     <Property Type="Int32" Name="LocationID" Nullable="false" />
@@ -2061,6 +2255,8 @@
     <Property Type="String" Name="Currency" Nullable="true" MaxLength="50" />
     <Property Type="Double" Name="Discounts" Nullable="true" />
     <Property Type="Double" Name="Tax" Nullable="true" />
+    <Property Type="Int32" Name="IsPickupAllowed" Nullable="true" />
+    <Property Type="Int32" Name="IsDeliveryAllowed" Nullable="true" />
   </ComplexType>
   <ComplexType Name="sp_GetMenu_api_Result">
     <Property Type="Int32" Name="CategoryID" Nullable="false" />
@@ -2098,6 +2294,24 @@
     <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
     <Property Type="Int32" Name="StatusID" Nullable="true" />
     <Property Type="Int32" Name="BrandID" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_GetMyOrderDetails_Web_Result">
+    <Property Type="Int32" Name="CustomerOrderID" Nullable="false" />
+    <Property Type="String" Name="Name" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="Email" Nullable="true" MaxLength="150" />
+    <Property Type="String" Name="Mobile" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Description" Nullable="true" />
+    <Property Type="String" Name="Address" Nullable="true" MaxLength="500" />
+    <Property Type="String" Name="Longitude" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Latitude" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="LocationURL" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="StatusID" Nullable="true" />
+    <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="100" />
+    <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="OrderID" Nullable="true" />
+    <Property Type="String" Name="AddressType" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="AddressNickName" Nullable="true" MaxLength="500" />
+    <Property Type="String" Name="DeliveryArea" Nullable="true" MaxLength="300" />
   </ComplexType>
   <ComplexType Name="sp_getOffers_Result">
     <Property Type="Int32" Name="OfferID" Nullable="false" />
@@ -2146,6 +2360,128 @@
     <Property Type="DateTime" Name="OrderOFDDate" Nullable="true" Precision="23" />
     <Property Type="DateTime" Name="OrderDoneDate" Nullable="true" Precision="23" />
     <Property Type="String" Name="Remarks" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_GetProducts_Web_Result">
+    <Property Type="Int32" Name="ItemID" Nullable="false" />
+    <Property Type="Int32" Name="CategoryID" Nullable="true" />
+    <Property Type="Int32" Name="UnitID" Nullable="true" />
+    <Property Type="String" Name="Name" Nullable="true" />
+    <Property Type="String" Name="ArabicName" Nullable="true" />
+    <Property Type="String" Name="Description" Nullable="true" />
+    <Property Type="String" Name="Image" Nullable="true" />
+    <Property Type="String" Name="Barcode" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="DisplayOrder" Nullable="true" />
+    <Property Type="Double" Name="Price" Nullable="true" />
+    <Property Type="Double" Name="Cost" Nullable="true" />
+    <Property Type="String" Name="ItemType" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="StatusID" Nullable="true" />
+    <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
+    <Property Type="Double" Name="Calories" Nullable="true" />
+    <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_itemList_Result">
+    <Property Type="Int32" Name="ItemID" Nullable="false" />
+    <Property Type="Int32" Name="CategoryID" Nullable="true" />
+    <Property Type="Int32" Name="UnitID" Nullable="true" />
+    <Property Type="String" Name="Name" Nullable="true" />
+    <Property Type="String" Name="ArabicName" Nullable="true" />
+    <Property Type="String" Name="Description" Nullable="true" />
+    <Property Type="String" Name="Image" Nullable="true" />
+    <Property Type="String" Name="Barcode" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="DisplayOrder" Nullable="true" />
+    <Property Type="Double" Name="Price" Nullable="true" />
+    <Property Type="Double" Name="Cost" Nullable="true" />
+    <Property Type="String" Name="ItemType" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="StatusID" Nullable="true" />
+    <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
+    <Property Type="Double" Name="Calories" Nullable="true" />
+    <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
+    <Property Type="Int32" Name="Stars" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="sp_itemListselected_Result">
+    <Property Type="Int32" Name="ItemID" Nullable="false" />
+    <Property Type="Int32" Name="CategoryID" Nullable="true" />
+    <Property Type="Int32" Name="UnitID" Nullable="true" />
+    <Property Type="String" Name="Name" Nullable="true" />
+    <Property Type="String" Name="ArabicName" Nullable="true" />
+    <Property Type="String" Name="Description" Nullable="true" />
+    <Property Type="String" Name="Image" Nullable="true" />
+    <Property Type="String" Name="Barcode" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="DisplayOrder" Nullable="true" />
+    <Property Type="Double" Name="Price" Nullable="true" />
+    <Property Type="Double" Name="Cost" Nullable="true" />
+    <Property Type="String" Name="ItemType" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="StatusID" Nullable="true" />
+    <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
+    <Property Type="Double" Name="Calories" Nullable="true" />
+    <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
+    <Property Type="Int32" Name="Stars" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="sp_itemListselected_Web_Result">
+    <Property Type="Int32" Name="ItemID" Nullable="false" />
+    <Property Type="Int32" Name="CategoryID" Nullable="true" />
+    <Property Type="Int32" Name="UnitID" Nullable="true" />
+    <Property Type="String" Name="Name" Nullable="true" />
+    <Property Type="String" Name="ArabicName" Nullable="true" />
+    <Property Type="String" Name="Description" Nullable="true" />
+    <Property Type="String" Name="Image" Nullable="true" />
+    <Property Type="String" Name="Barcode" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="DisplayOrder" Nullable="true" />
+    <Property Type="Double" Name="Price" Nullable="true" />
+    <Property Type="Double" Name="Cost" Nullable="true" />
+    <Property Type="String" Name="ItemType" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="StatusID" Nullable="true" />
+    <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
+    <Property Type="Double" Name="Calories" Nullable="true" />
+    <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
+    <Property Type="Int32" Name="Stars" Nullable="false" />
+  </ComplexType>
+  <ComplexType Name="sp_login_Web_Result">
+    <Property Type="Int32" Name="CustomerID" Nullable="false" />
+    <Property Type="String" Name="FullName" Nullable="true" MaxLength="200" />
+    <Property Type="String" Name="Email" Nullable="true" MaxLength="150" />
+    <Property Type="String" Name="Mobile" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="Image" Nullable="true" />
+    <Property Type="Int32" Name="StatusID" Nullable="true" />
+    <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="100" />
+    <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="LocationID" Nullable="true" />
+    <Property Type="Int32" Name="BrandID" Nullable="true" />
+    <Property Type="String" Name="Password" Nullable="true" MaxLength="250" />
+  </ComplexType>
+  <ComplexType Name="sp_ProductDetails_Web_Result">
+    <Property Type="Int32" Name="ItemID" Nullable="false" />
+    <Property Type="Int32" Name="CategoryID" Nullable="true" />
+    <Property Type="Int32" Name="UnitID" Nullable="true" />
+    <Property Type="String" Name="Name" Nullable="true" />
+    <Property Type="String" Name="ArabicName" Nullable="true" />
+    <Property Type="String" Name="Description" Nullable="true" />
+    <Property Type="String" Name="Image" Nullable="true" />
+    <Property Type="String" Name="Barcode" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+    <Property Type="Int32" Name="DisplayOrder" Nullable="true" />
+    <Property Type="Double" Name="Price" Nullable="true" />
+    <Property Type="Double" Name="Cost" Nullable="true" />
+    <Property Type="String" Name="ItemType" Nullable="true" MaxLength="50" />
+    <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+    <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+    <Property Type="Int32" Name="StatusID" Nullable="true" />
+    <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
+    <Property Type="Double" Name="Calories" Nullable="true" />
+    <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
+    <Property Type="Int32" Name="Stars" Nullable="false" />
   </ComplexType>
   <ComplexType Name="sp_rptSalesCategorywiseAdmin_Result">
     <Property Type="String" Name="CategoryName" Nullable="true" MaxLength="300" />

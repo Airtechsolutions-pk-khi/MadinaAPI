@@ -11,7 +11,7 @@ namespace DAL.DBEntities
 {
     using System;
     
-    public partial class sp_GetItembyID_Admin_Result
+    public partial class sp_itemList_Result
     {
         public int ItemID { get; set; }
         public Nullable<int> CategoryID { get; set; }
@@ -32,8 +32,6 @@ namespace DAL.DBEntities
         public Nullable<bool> IsFeatured { get; set; }
         public Nullable<double> Calories { get; set; }
         public Nullable<bool> IsApplyDiscount { get; set; }
-        public string CategoryName { get; set; }
-        public string Modifiers { get; set; }
-        public string Addons { get; set; }
+        public int Stars { get; set; }
     }
 }

@@ -4,36 +4,37 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="62a43a2f6da746daad426c1a6a295e9f" Name="Diagram1">
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.Addon" Width="1.5" PointX="9.75" PointY="35.125" IsExpanded="true" />
+      <Diagram DiagramId="6056077ae757498da69a9e098d58e727" Name="Diagram1">
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Addon" Width="1.5" PointX="9.75" PointY="36.375" IsExpanded="true" />
         <EntityTypeShape EntityType="db_a861ba_madinaModel.ApplicationInfo" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="db_a861ba_madinaModel.AppSetting" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.Banner" Width="1.5" PointX="3" PointY="29.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.Brand" Width="1.5" PointX="0.75" PointY="31.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.Category" Width="1.5" PointX="5.25" PointY="43.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.Customer" Width="1.5" PointX="8.25" PointY="43" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerAddress" Width="1.5" PointX="10.5" PointY="39.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerDetail" Width="1.5" PointX="10.5" PointY="43.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Banner" Width="1.5" PointX="3" PointY="30.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Brand" Width="1.5" PointX="0.75" PointY="33.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Category" Width="1.5" PointX="5.25" PointY="45.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Customer" Width="1.5" PointX="8.25" PointY="45" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerAddress" Width="1.5" PointX="10.5" PointY="41.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerDetail" Width="1.5" PointX="10.5" PointY="45.625" IsExpanded="true" />
         <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerOrderDetail" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerOrder" Width="1.5" PointX="10.5" PointY="52.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerPayment" Width="1.5" PointX="10.5" PointY="47.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.Delivery" Width="1.5" PointX="0.75" PointY="28.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.DeliveryAreaBrandJunc" Width="1.5" PointX="3" PointY="33.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.Item" Width="1.5" PointX="7.5" PointY="36.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.Location" Width="1.5" PointX="3" PointY="51.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.Modifier" Width="1.5" PointX="12.75" PointY="35.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.Offer" Width="1.5" PointX="9.75" PointY="30.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.OrderCheckout" Width="1.5" PointX="10.5" PointY="57.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.OrderDetail" Width="1.5" PointX="13.5" PointY="44.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.OrderDetailAddon" Width="1.5" PointX="15.75" PointY="40.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.OrderDetailModifier" Width="1.5" PointX="18.75" PointY="40.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.Order" Width="1.5" PointX="8.25" PointY="51.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.PushToken" Width="1.5" PointX="5.25" PointY="53.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerOrder" Width="1.5" PointX="10.5" PointY="54.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.CustomerPayment" Width="1.5" PointX="10.5" PointY="49.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Delivery" Width="1.5" PointX="0.75" PointY="30.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.DeliveryAreaBrandJunc" Width="1.5" PointX="3" PointY="35.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Item" Width="1.5" PointX="7.5" PointY="37.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Location" Width="1.5" PointX="3" PointY="52.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Modifier" Width="1.5" PointX="12.75" PointY="37.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Offer" Width="1.5" PointX="12.75" PointY="32.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.OrderCheckout" Width="1.5" PointX="10.5" PointY="59.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.OrderDetail" Width="1.5" PointX="13.5" PointY="46.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.OrderDetailAddon" Width="1.5" PointX="15.75" PointY="41.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.OrderDetailModifier" Width="1.5" PointX="18.75" PointY="42.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Order" Width="1.5" PointX="8.25" PointY="53.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.PushToken" Width="1.5" PointX="5.25" PointY="55.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Reveiw" Width="1.5" PointX="9.75" PointY="64.375" IsExpanded="true" />
         <EntityTypeShape EntityType="db_a861ba_madinaModel.Status" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.SubUser" Width="1.5" PointX="5.25" PointY="37.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.TodaySpecialItem" Width="1.5" PointX="9.75" PointY="62.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.TransferOrder" Width="1.5" PointX="13.5" PointY="53.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="db_a861ba_madinaModel.Unit" Width="1.5" PointX="5.25" PointY="33.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.SubUser" Width="1.5" PointX="5.25" PointY="39.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.TodaySpecialItem" Width="1.5" PointX="9.75" PointY="67.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.TransferOrder" Width="1.5" PointX="13.5" PointY="55.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="db_a861ba_madinaModel.Unit" Width="1.5" PointX="5.25" PointY="36" IsExpanded="true" />
         <AssociationConnector Association="db_a861ba_madinaModel.FK_OrderDetailAddon_Addons" ManuallyRouted="false" />
         <AssociationConnector Association="db_a861ba_madinaModel.FK_Banners_Brand" ManuallyRouted="false" />
         <AssociationConnector Association="db_a861ba_madinaModel.FK_Category_Brand" ManuallyRouted="false" />
@@ -54,6 +55,7 @@
         <AssociationConnector Association="db_a861ba_madinaModel.FK_Items_Unit" ManuallyRouted="false" />
         <AssociationConnector Association="db_a861ba_madinaModel.FK_Offers_Items" ManuallyRouted="false" />
         <AssociationConnector Association="db_a861ba_madinaModel.FK_OrderDetail_Items" ManuallyRouted="false" />
+        <AssociationConnector Association="db_a861ba_madinaModel.FK_Reveiws_Item" ManuallyRouted="false" />
         <AssociationConnector Association="db_a861ba_madinaModel.FK_TodaySpecialItems_Items" ManuallyRouted="false" />
         <AssociationConnector Association="db_a861ba_madinaModel.FK_Orders_Locations" ManuallyRouted="false" />
         <AssociationConnector Association="db_a861ba_madinaModel.FK_PushToken_Locations" ManuallyRouted="false" />

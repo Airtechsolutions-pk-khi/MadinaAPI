@@ -244,6 +244,7 @@
           <Property Name="StatusID" Type="int" />
           <Property Name="IsFeatured" Type="bit" />
           <Property Name="Calories" Type="float" />
+          <Property Name="IsApplyDiscount" Type="bit" />
         </EntityType>
         <EntityType Name="Locations">
           <Key>
@@ -273,6 +274,8 @@
           <Property Name="Currency" Type="nvarchar" MaxLength="50" />
           <Property Name="Discounts" Type="float" />
           <Property Name="Tax" Type="float" />
+          <Property Name="IsPickupAllowed" Type="int" />
+          <Property Name="IsDeliveryAllowed" Type="int" />
         </EntityType>
         <EntityType Name="Modifiers">
           <Key>
@@ -398,6 +401,19 @@
           <Property Name="LocationID" Type="int" />
           <Property Name="StatusID" Type="int" />
           <Property Name="Device" Type="int" />
+        </EntityType>
+        <EntityType Name="Reveiws">
+          <Key>
+            <PropertyRef Name="ReviewID" />
+          </Key>
+          <Property Name="ReviewID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Stars" Type="int" />
+          <Property Name="Name" Type="nvarchar" MaxLength="250" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="Contact" Type="nvarchar" MaxLength="50" />
+          <Property Name="StatusID" Type="int" />
+          <Property Name="ItemID" Type="int" />
         </EntityType>
         <EntityType Name="Status">
           <Key>
@@ -841,6 +857,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Reveiws_Item">
+          <End Role="Items" Type="Self.Items" Multiplicity="0..1" />
+          <End Role="Reveiws" Type="Self.Reveiws" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Items">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="Reveiws">
+              <PropertyRef Name="ItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SubUser_Brand">
           <End Role="Brand" Type="Self.Brand" Multiplicity="0..1" />
           <End Role="SubUser" Type="Self.SubUser" Multiplicity="*" />
@@ -962,6 +990,13 @@
           <Parameter Name="BrandID" Type="int" Mode="In" />
           <Parameter Name="Items" Type="nvarchar" Mode="In" />
         </Function>
+        <Function Name="sp_filterCategory_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Category" Type="nvarchar(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_filterProduct_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Category" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Searchtxt" Type="nvarchar(max)" Mode="In" />
+        </Function>
         <Function Name="sp_getAddons" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="brandid" Type="int" Mode="In" />
         </Function>
@@ -1005,6 +1040,7 @@
           <Parameter Name="id" Type="int" Mode="In" />
           <Parameter Name="brandid" Type="int" Mode="In" />
         </Function>
+        <Function Name="sp_GetCategoryList_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_getCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="brandid" Type="int" Mode="In" />
         </Function>
@@ -1055,6 +1091,9 @@
           <Parameter Name="id" Type="int" Mode="In" />
           <Parameter Name="brandid" Type="int" Mode="In" />
         </Function>
+        <Function Name="sp_GetMyOrderDetails_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="OrderID" Type="int" Mode="In" />
+        </Function>
         <Function Name="sp_getOffers" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="brandid" Type="int" Mode="In" />
         </Function>
@@ -1065,6 +1104,7 @@
         <Function Name="sp_GetOrdersbyID_Admin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="OrderID" Type="int" Mode="In" />
         </Function>
+        <Function Name="sp_GetProducts_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <Function Name="sp_insertAddon_Admin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Name" Type="nvarchar" Mode="In" />
           <Parameter Name="ArabicName" Type="nvarchar" Mode="In" />
@@ -1173,6 +1213,7 @@
           <Parameter Name="IsFeatured" Type="bit" Mode="In" />
           <Parameter Name="Calories" Type="float" Mode="In" />
           <Parameter Name="ItemID" Type="int" Mode="In" />
+          <Parameter Name="IsApplyDiscount" Type="bit" Mode="In" />
         </Function>
         <Function Name="sp_insertItemAddons_Admin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Addons" Type="nvarchar" Mode="In" />
@@ -1236,6 +1277,89 @@
           <Parameter Name="LastUpdatedDate" Type="datetime" Mode="In" />
           <Parameter Name="BrandID" Type="int" Mode="In" />
           <Parameter Name="OfferID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_InsertOrder_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="OrderNo" Type="int" Mode="In" />
+          <Parameter Name="CustomerID" Type="int" Mode="In" />
+          <Parameter Name="OrderType" Type="varchar" Mode="In" />
+          <Parameter Name="OrderDate" Type="datetime" Mode="In" />
+          <Parameter Name="StatusID" Type="int" Mode="In" />
+          <Parameter Name="SessionID" Type="varchar(max)" Mode="In" />
+          <Parameter Name="OrderTakerID" Type="int" Mode="In" />
+          <Parameter Name="DeliverUserID" Type="int" Mode="In" />
+          <Parameter Name="LastUpdatedBy" Type="int" Mode="In" />
+          <Parameter Name="LastUpdatedDT" Type="datetime" Mode="In" />
+          <Parameter Name="LocationID" Type="int" Mode="In" />
+          <Parameter Name="OrderPreparedDate" Type="datetime" Mode="In" />
+          <Parameter Name="OrderOFDDate" Type="datetime" Mode="In" />
+          <Parameter Name="OrderDoneDate" Type="datetime" Mode="In" />
+          <Parameter Name="Remarks" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Name" Type="nvarchar" Mode="In" />
+          <Parameter Name="Email" Type="nvarchar" Mode="In" />
+          <Parameter Name="Mobile" Type="nvarchar" Mode="In" />
+          <Parameter Name="Description" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Address" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Longitude" Type="nvarchar" Mode="In" />
+          <Parameter Name="Latitude" Type="nvarchar" Mode="In" />
+          <Parameter Name="LocationURL" Type="nvarchar" Mode="In" />
+          <Parameter Name="LastUpdatedDate" Type="datetime" Mode="In" />
+          <Parameter Name="AddressType" Type="nvarchar" Mode="In" />
+          <Parameter Name="AddressNickName" Type="nvarchar" Mode="In" />
+          <Parameter Name="DeliveryArea" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_InsertOrderCheckout_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="OrderID" Type="int" Mode="In" />
+          <Parameter Name="PaymentMode" Type="int" Mode="In" />
+          <Parameter Name="AmountPaid" Type="float" Mode="In" />
+          <Parameter Name="AmountTotal" Type="float" Mode="In" />
+          <Parameter Name="GrandTotal" Type="float" Mode="In" />
+          <Parameter Name="ServiceCharges" Type="float" Mode="In" />
+          <Parameter Name="Tax" Type="float" Mode="In" />
+          <Parameter Name="CheckoutDate" Type="datetime" Mode="In" />
+          <Parameter Name="SessionID" Type="nvarchar" Mode="In" />
+          <Parameter Name="StatusID" Type="int" Mode="In" />
+          <Parameter Name="LastUpdateBy" Type="int" Mode="In" />
+          <Parameter Name="LastUpdatedDate" Type="datetime" Mode="In" />
+          <Parameter Name="DiscountAmount" Type="float" Mode="In" />
+        </Function>
+        <Function Name="sp_InsertOrderDetail_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="OrderID" Type="int" Mode="In" />
+          <Parameter Name="ItemID" Type="int" Mode="In" />
+          <Parameter Name="Quantity" Type="float" Mode="In" />
+          <Parameter Name="Price" Type="float" Mode="In" />
+          <Parameter Name="Cost" Type="float" Mode="In" />
+          <Parameter Name="OrderMode" Type="nvarchar" Mode="In" />
+          <Parameter Name="StatusID" Type="int" Mode="In" />
+          <Parameter Name="LastUpdateBy" Type="int" Mode="In" />
+          <Parameter Name="LastUpdateDT" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="sp_InsertReview_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Name" Type="nvarchar" Mode="In" />
+          <Parameter Name="Description" Type="nvarchar" Mode="In" />
+          <Parameter Name="Contact" Type="nvarchar" Mode="In" />
+          <Parameter Name="Email" Type="nvarchar" Mode="In" />
+          <Parameter Name="Stars" Type="int" Mode="In" />
+          <Parameter Name="StatusID" Type="int" Mode="In" />
+          <Parameter Name="ItemID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_itemList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="sp_itemListselected" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="sp_itemListselected_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="sp_login_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="email" Type="nvarchar" Mode="In" />
+          <Parameter Name="password" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_ProductDetails_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ItemID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_register_Web" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FullName" Type="nvarchar" Mode="In" />
+          <Parameter Name="Email" Type="nvarchar" Mode="In" />
+          <Parameter Name="Mobile" Type="nvarchar" Mode="In" />
+          <Parameter Name="StatusID" Type="int" Mode="In" />
+          <Parameter Name="LastUpdatedBy" Type="nvarchar" Mode="In" />
+          <Parameter Name="LastUpdatedDate" Type="datetime" Mode="In" />
+          <Parameter Name="Password" Type="nvarchar" Mode="In" />
         </Function>
         <Function Name="sp_rptSalesCategorywiseAdmin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="brandid" Type="int" Mode="In" />
@@ -1406,6 +1530,7 @@
           <Parameter Name="IsFeatured" Type="bit" Mode="In" />
           <Parameter Name="Calories" Type="float" Mode="In" />
           <Parameter Name="ItemID" Type="int" Mode="In" />
+          <Parameter Name="IsApplyDiscount" Type="bit" Mode="In" />
         </Function>
         <Function Name="sp_updateLocation_Admin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="Name" Type="nvarchar" Mode="In" />
@@ -1494,6 +1619,7 @@
           <EntitySet Name="OrderDetailModifier" EntityType="Self.OrderDetailModifier" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PushToken" EntityType="Self.PushToken" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Reveiws" EntityType="Self.Reveiws" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Status" EntityType="Self.Status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SubUser" EntityType="Self.SubUser" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TodaySpecialItems" EntityType="Self.TodaySpecialItems" Schema="dbo" store:Type="Tables" />
@@ -1626,6 +1752,10 @@
           <AssociationSet Name="FK_PushToken_Locations" Association="Self.FK_PushToken_Locations">
             <End Role="Locations" EntitySet="Locations" />
             <End Role="PushToken" EntitySet="PushToken" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reveiws_Item" Association="Self.FK_Reveiws_Item">
+            <End Role="Items" EntitySet="Items" />
+            <End Role="Reveiws" EntitySet="Reveiws" />
           </AssociationSet>
           <AssociationSet Name="FK_SubUser_Brand" Association="Self.FK_SubUser_Brand">
             <End Role="Brand" EntitySet="Brand" />
@@ -1906,10 +2036,12 @@
           <Property Name="StatusID" Type="Int32" />
           <Property Name="IsFeatured" Type="Boolean" />
           <Property Name="Calories" Type="Double" />
+          <Property Name="IsApplyDiscount" Type="Boolean" />
           <NavigationProperty Name="Category" Relationship="Self.FK_Items_Items" FromRole="Items" ToRole="Category" />
           <NavigationProperty Name="Unit" Relationship="Self.FK_Items_Unit" FromRole="Items" ToRole="Unit" />
           <NavigationProperty Name="Offers" Relationship="Self.FK_Offers_Items" FromRole="Items" ToRole="Offers" />
           <NavigationProperty Name="OrderDetails" Relationship="Self.FK_OrderDetail_Items" FromRole="Items" ToRole="OrderDetail" />
+          <NavigationProperty Name="Reveiws" Relationship="Self.FK_Reveiws_Item" FromRole="Items" ToRole="Reveiws" />
           <NavigationProperty Name="TodaySpecialItems" Relationship="Self.FK_TodaySpecialItems_Items" FromRole="Items" ToRole="TodaySpecialItems" />
           <NavigationProperty Name="Addons" Relationship="Self.ItemAddonsJunc" FromRole="Items" ToRole="Addons" />
           <NavigationProperty Name="Modifiers" Relationship="Self.ItemModifiersJunc" FromRole="Items" ToRole="Modifiers" />
@@ -1942,6 +2074,8 @@
           <Property Name="Currency" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Discounts" Type="Double" />
           <Property Name="Tax" Type="Double" />
+          <Property Name="IsPickupAllowed" Type="Int32" />
+          <Property Name="IsDeliveryAllowed" Type="Int32" />
           <NavigationProperty Name="Brand" Relationship="Self.FK_Locations_Brand" FromRole="Locations" ToRole="Brand" />
           <NavigationProperty Name="Categories" Relationship="Self.FK_Category_Locations" FromRole="Locations" ToRole="Category" />
           <NavigationProperty Name="Customers" Relationship="Self.FK_Customer_Locations" FromRole="Locations" ToRole="Customer" />
@@ -2097,6 +2231,20 @@
           <Property Name="StatusID" Type="Int32" />
           <Property Name="Device" Type="Int32" />
           <NavigationProperty Name="Location" Relationship="Self.FK_PushToken_Locations" FromRole="PushToken" ToRole="Locations" />
+        </EntityType>
+        <EntityType Name="Reveiw">
+          <Key>
+            <PropertyRef Name="ReviewID" />
+          </Key>
+          <Property Name="ReviewID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Stars" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Contact" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StatusID" Type="Int32" />
+          <Property Name="ItemID" Type="Int32" />
+          <NavigationProperty Name="Item" Relationship="Self.FK_Reveiws_Item" FromRole="Reveiws" ToRole="Items" />
         </EntityType>
         <EntityType Name="Status">
           <Key>
@@ -2405,6 +2553,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Reveiws_Item">
+          <End Role="Items" Type="Self.Item" Multiplicity="0..1" />
+          <End Role="Reveiws" Type="Self.Reveiw" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Items">
+              <PropertyRef Name="ItemID" />
+            </Principal>
+            <Dependent Role="Reveiws">
+              <PropertyRef Name="ItemID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_TodaySpecialItems_Items">
           <End Role="Items" Type="Self.Item" Multiplicity="0..1" />
           <End Role="TodaySpecialItems" Type="Self.TodaySpecialItem" Multiplicity="*" />
@@ -2606,6 +2766,7 @@
           <EntitySet Name="OrderDetailModifiers" EntityType="Self.OrderDetailModifier" />
           <EntitySet Name="Orders" EntityType="Self.Order" />
           <EntitySet Name="PushTokens" EntityType="Self.PushToken" />
+          <EntitySet Name="Reveiws" EntityType="Self.Reveiw" />
           <EntitySet Name="Status" EntityType="Self.Status" />
           <EntitySet Name="SubUsers" EntityType="Self.SubUser" />
           <EntitySet Name="TodaySpecialItems" EntityType="Self.TodaySpecialItem" />
@@ -2690,6 +2851,10 @@
           <AssociationSet Name="FK_OrderDetail_Items" Association="Self.FK_OrderDetail_Items">
             <End Role="Items" EntitySet="Items" />
             <End Role="OrderDetail" EntitySet="OrderDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Reveiws_Item" Association="Self.FK_Reveiws_Item">
+            <End Role="Items" EntitySet="Items" />
+            <End Role="Reveiws" EntitySet="Reveiws" />
           </AssociationSet>
           <AssociationSet Name="FK_TodaySpecialItems_Items" Association="Self.FK_TodaySpecialItems_Items">
             <End Role="Items" EntitySet="Items" />
@@ -2804,6 +2969,13 @@
             <Parameter Name="BrandID" Mode="In" Type="Int32" />
             <Parameter Name="Items" Mode="In" Type="String" />
           </FunctionImport>
+          <FunctionImport Name="sp_filterCategory_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_filterCategory_Web_Result)">
+            <Parameter Name="Category" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_filterProduct_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_filterProduct_Web_Result)">
+            <Parameter Name="Category" Mode="In" Type="String" />
+            <Parameter Name="Searchtxt" Mode="In" Type="String" />
+          </FunctionImport>
           <FunctionImport Name="sp_getAddons" ReturnType="Collection(db_a861ba_madinaModel.sp_getAddons_Result)">
             <Parameter Name="brandid" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -2847,6 +3019,7 @@
             <Parameter Name="id" Mode="In" Type="Int32" />
             <Parameter Name="brandid" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="sp_GetCategoryList_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_GetCategoryList_Web_Result)" />
           <FunctionImport Name="sp_getCustomer" ReturnType="Collection(db_a861ba_madinaModel.sp_getCustomer_Result)">
             <Parameter Name="brandid" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -2897,6 +3070,9 @@
             <Parameter Name="id" Mode="In" Type="Int32" />
             <Parameter Name="brandid" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="sp_GetMyOrderDetails_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_GetMyOrderDetails_Web_Result)">
+            <Parameter Name="OrderID" Mode="In" Type="Int32" />
+          </FunctionImport>
           <FunctionImport Name="sp_getOffers" ReturnType="Collection(db_a861ba_madinaModel.sp_getOffers_Result)">
             <Parameter Name="brandid" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -2907,6 +3083,7 @@
           <FunctionImport Name="sp_GetOrdersbyID_Admin" ReturnType="Collection(db_a861ba_madinaModel.sp_GetOrdersbyID_Admin_Result)">
             <Parameter Name="OrderID" Mode="In" Type="Int32" />
           </FunctionImport>
+          <FunctionImport Name="sp_GetProducts_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_GetProducts_Web_Result)" />
           <FunctionImport Name="sp_insertAddon_Admin">
             <Parameter Name="Name" Mode="In" Type="String" />
             <Parameter Name="ArabicName" Mode="In" Type="String" />
@@ -3015,6 +3192,7 @@
             <Parameter Name="IsFeatured" Mode="In" Type="Boolean" />
             <Parameter Name="Calories" Mode="In" Type="Double" />
             <Parameter Name="ItemID" Mode="In" Type="Int32" />
+            <Parameter Name="IsApplyDiscount" Mode="In" Type="Boolean" />
           </FunctionImport>
           <FunctionImport Name="sp_insertItemAddons_Admin">
             <Parameter Name="Addons" Mode="In" Type="String" />
@@ -3078,6 +3256,89 @@
             <Parameter Name="LastUpdatedDate" Mode="In" Type="DateTime" />
             <Parameter Name="BrandID" Mode="In" Type="Int32" />
             <Parameter Name="OfferID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_InsertOrder_Web" ReturnType="Collection(Int32)">
+            <Parameter Name="OrderNo" Mode="In" Type="Int32" />
+            <Parameter Name="CustomerID" Mode="In" Type="Int32" />
+            <Parameter Name="OrderType" Mode="In" Type="String" />
+            <Parameter Name="OrderDate" Mode="In" Type="DateTime" />
+            <Parameter Name="StatusID" Mode="In" Type="Int32" />
+            <Parameter Name="SessionID" Mode="In" Type="String" />
+            <Parameter Name="OrderTakerID" Mode="In" Type="Int32" />
+            <Parameter Name="DeliverUserID" Mode="In" Type="Int32" />
+            <Parameter Name="LastUpdatedBy" Mode="In" Type="Int32" />
+            <Parameter Name="LastUpdatedDT" Mode="In" Type="DateTime" />
+            <Parameter Name="LocationID" Mode="In" Type="Int32" />
+            <Parameter Name="OrderPreparedDate" Mode="In" Type="DateTime" />
+            <Parameter Name="OrderOFDDate" Mode="In" Type="DateTime" />
+            <Parameter Name="OrderDoneDate" Mode="In" Type="DateTime" />
+            <Parameter Name="Remarks" Mode="In" Type="String" />
+            <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="Email" Mode="In" Type="String" />
+            <Parameter Name="Mobile" Mode="In" Type="String" />
+            <Parameter Name="Description" Mode="In" Type="String" />
+            <Parameter Name="Address" Mode="In" Type="String" />
+            <Parameter Name="Longitude" Mode="In" Type="String" />
+            <Parameter Name="Latitude" Mode="In" Type="String" />
+            <Parameter Name="LocationURL" Mode="In" Type="String" />
+            <Parameter Name="LastUpdatedDate" Mode="In" Type="DateTime" />
+            <Parameter Name="AddressType" Mode="In" Type="String" />
+            <Parameter Name="AddressNickName" Mode="In" Type="String" />
+            <Parameter Name="DeliveryArea" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_InsertOrderCheckout_Web" ReturnType="Collection(Int32)">
+            <Parameter Name="OrderID" Mode="In" Type="Int32" />
+            <Parameter Name="PaymentMode" Mode="In" Type="Int32" />
+            <Parameter Name="AmountPaid" Mode="In" Type="Double" />
+            <Parameter Name="AmountTotal" Mode="In" Type="Double" />
+            <Parameter Name="GrandTotal" Mode="In" Type="Double" />
+            <Parameter Name="ServiceCharges" Mode="In" Type="Double" />
+            <Parameter Name="Tax" Mode="In" Type="Double" />
+            <Parameter Name="CheckoutDate" Mode="In" Type="DateTime" />
+            <Parameter Name="SessionID" Mode="In" Type="String" />
+            <Parameter Name="StatusID" Mode="In" Type="Int32" />
+            <Parameter Name="LastUpdateBy" Mode="In" Type="Int32" />
+            <Parameter Name="LastUpdatedDate" Mode="In" Type="DateTime" />
+            <Parameter Name="DiscountAmount" Mode="In" Type="Double" />
+          </FunctionImport>
+          <FunctionImport Name="sp_InsertOrderDetail_Web" ReturnType="Collection(Int32)">
+            <Parameter Name="OrderID" Mode="In" Type="Int32" />
+            <Parameter Name="ItemID" Mode="In" Type="Int32" />
+            <Parameter Name="Quantity" Mode="In" Type="Double" />
+            <Parameter Name="Price" Mode="In" Type="Double" />
+            <Parameter Name="Cost" Mode="In" Type="Double" />
+            <Parameter Name="OrderMode" Mode="In" Type="String" />
+            <Parameter Name="StatusID" Mode="In" Type="Int32" />
+            <Parameter Name="LastUpdateBy" Mode="In" Type="Int32" />
+            <Parameter Name="LastUpdateDT" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="sp_InsertReview_Web" ReturnType="Collection(Decimal)">
+            <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="Description" Mode="In" Type="String" />
+            <Parameter Name="Contact" Mode="In" Type="String" />
+            <Parameter Name="Email" Mode="In" Type="String" />
+            <Parameter Name="Stars" Mode="In" Type="Int32" />
+            <Parameter Name="StatusID" Mode="In" Type="Int32" />
+            <Parameter Name="ItemID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_itemList" ReturnType="Collection(db_a861ba_madinaModel.sp_itemList_Result)" />
+          <FunctionImport Name="sp_itemListselected" ReturnType="Collection(db_a861ba_madinaModel.sp_itemListselected_Result)" />
+          <FunctionImport Name="sp_itemListselected_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_itemListselected_Web_Result)" />
+          <FunctionImport Name="sp_login_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_login_Web_Result)">
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_ProductDetails_Web" ReturnType="Collection(db_a861ba_madinaModel.sp_ProductDetails_Web_Result)">
+            <Parameter Name="ItemID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_register_Web">
+            <Parameter Name="FullName" Mode="In" Type="String" />
+            <Parameter Name="Email" Mode="In" Type="String" />
+            <Parameter Name="Mobile" Mode="In" Type="String" />
+            <Parameter Name="StatusID" Mode="In" Type="Int32" />
+            <Parameter Name="LastUpdatedBy" Mode="In" Type="String" />
+            <Parameter Name="LastUpdatedDate" Mode="In" Type="DateTime" />
+            <Parameter Name="Password" Mode="In" Type="String" />
           </FunctionImport>
           <FunctionImport Name="sp_rptSalesCategorywiseAdmin" ReturnType="Collection(db_a861ba_madinaModel.sp_rptSalesCategorywiseAdmin_Result)">
             <Parameter Name="brandid" Mode="In" Type="Int32" />
@@ -3248,6 +3509,7 @@
             <Parameter Name="IsFeatured" Mode="In" Type="Boolean" />
             <Parameter Name="Calories" Mode="In" Type="Double" />
             <Parameter Name="ItemID" Mode="In" Type="Int32" />
+            <Parameter Name="IsApplyDiscount" Mode="In" Type="Boolean" />
           </FunctionImport>
           <FunctionImport Name="sp_updateLocation_Admin">
             <Parameter Name="Name" Mode="In" Type="String" />
@@ -3324,6 +3586,48 @@
           <Property Type="Int64" Name="BusinessKey" Nullable="true" />
           <Property Type="String" Name="LastUpdateBy" Nullable="true" MaxLength="150" />
           <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+        </ComplexType>
+        <ComplexType Name="sp_filterCategory_Web_Result">
+          <Property Type="Int32" Name="CategoryID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="300" />
+          <Property Type="String" Name="ArabicName" Nullable="true" MaxLength="300" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Image" Nullable="true" />
+          <Property Type="Int32" Name="DisplayOrder" Nullable="false" />
+          <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="LocationID" Nullable="true" />
+          <Property Type="Int32" Name="BrandID" Nullable="true" />
+          <Property Type="Int32" Name="ItemID" Nullable="false" />
+          <Property Type="String" Name="ItemName" Nullable="true" />
+          <Property Type="Int32" Name="Expr1" Nullable="true" />
+          <Property Type="Double" Name="Price" Nullable="true" />
+          <Property Type="Double" Name="Cost" Nullable="true" />
+          <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
+          <Property Type="String" Name="ItemImage" Nullable="true" />
+          <Property Type="Int32" Name="StatusID" Nullable="true" />
+          <Property Type="Int32" Name="Expr2" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_filterProduct_Web_Result">
+          <Property Type="Int32" Name="ItemID" Nullable="false" />
+          <Property Type="Int32" Name="CategoryID" Nullable="true" />
+          <Property Type="Int32" Name="UnitID" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="true" />
+          <Property Type="String" Name="ArabicName" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="true" />
+          <Property Type="String" Name="Image" Nullable="true" />
+          <Property Type="String" Name="Barcode" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="DisplayOrder" Nullable="true" />
+          <Property Type="Double" Name="Price" Nullable="true" />
+          <Property Type="Double" Name="Cost" Nullable="true" />
+          <Property Type="String" Name="ItemType" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="StatusID" Nullable="true" />
+          <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
+          <Property Type="Double" Name="Calories" Nullable="true" />
+          <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
         </ComplexType>
         <ComplexType Name="sp_getAddons_Result">
           <Property Type="Int32" Name="AddonID" Nullable="false" />
@@ -3519,6 +3823,20 @@
           <Property Type="Int32" Name="LocationID" Nullable="true" />
           <Property Type="Int32" Name="BrandID" Nullable="true" />
         </ComplexType>
+        <ComplexType Name="sp_GetCategoryList_Web_Result">
+          <Property Type="Int32" Name="CategoryID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="300" />
+          <Property Type="String" Name="ArabicName" Nullable="true" MaxLength="300" />
+          <Property Type="String" Name="Description" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Image" Nullable="true" />
+          <Property Type="Int32" Name="DisplayOrder" Nullable="false" />
+          <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="StatusID" Nullable="true" />
+          <Property Type="Int32" Name="LocationID" Nullable="true" />
+          <Property Type="Int32" Name="BrandID" Nullable="true" />
+          <Property Type="Int64" Name="Row_Counter" Nullable="true" />
+        </ComplexType>
         <ComplexType Name="sp_getCustomer_Result">
           <Property Type="Int32" Name="CustomerID" Nullable="false" />
           <Property Type="String" Name="FullName" Nullable="true" MaxLength="200" />
@@ -3612,6 +3930,7 @@
           <Property Type="Int32" Name="StatusID" Nullable="true" />
           <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
           <Property Type="Double" Name="Calories" Nullable="true" />
+          <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
           <Property Type="String" Name="CategoryName" Nullable="true" MaxLength="300" />
           <Property Type="String" Name="Modifiers" Nullable="true" MaxLength="250" />
           <Property Type="String" Name="Addons" Nullable="true" MaxLength="250" />
@@ -3635,6 +3954,7 @@
           <Property Type="Int32" Name="StatusID" Nullable="true" />
           <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
           <Property Type="Double" Name="Calories" Nullable="true" />
+          <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
           <Property Type="String" Name="CategoryName" Nullable="true" MaxLength="300" />
         </ComplexType>
         <ComplexType Name="sp_GetItemSettingsTitle_Admin_Result">
@@ -3666,6 +3986,8 @@
           <Property Type="String" Name="Currency" Nullable="true" MaxLength="50" />
           <Property Type="Double" Name="Discounts" Nullable="true" />
           <Property Type="Double" Name="Tax" Nullable="true" />
+          <Property Type="Int32" Name="IsPickupAllowed" Nullable="true" />
+          <Property Type="Int32" Name="IsDeliveryAllowed" Nullable="true" />
         </ComplexType>
         <ComplexType Name="sp_GetLocationID_Admin_Result">
           <Property Type="Int32" Name="LocationID" Nullable="false" />
@@ -3692,6 +4014,8 @@
           <Property Type="String" Name="Currency" Nullable="true" MaxLength="50" />
           <Property Type="Double" Name="Discounts" Nullable="true" />
           <Property Type="Double" Name="Tax" Nullable="true" />
+          <Property Type="Int32" Name="IsPickupAllowed" Nullable="true" />
+          <Property Type="Int32" Name="IsDeliveryAllowed" Nullable="true" />
         </ComplexType>
         <ComplexType Name="sp_getLocations_api_Result">
           <Property Type="Int32" Name="LocationID" Nullable="false" />
@@ -3718,6 +4042,8 @@
           <Property Type="String" Name="Currency" Nullable="true" MaxLength="50" />
           <Property Type="Double" Name="Discounts" Nullable="true" />
           <Property Type="Double" Name="Tax" Nullable="true" />
+          <Property Type="Int32" Name="IsPickupAllowed" Nullable="true" />
+          <Property Type="Int32" Name="IsDeliveryAllowed" Nullable="true" />
         </ComplexType>
         <ComplexType Name="sp_GetMenu_api_Result">
           <Property Type="Int32" Name="CategoryID" Nullable="false" />
@@ -3755,6 +4081,24 @@
           <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
           <Property Type="Int32" Name="StatusID" Nullable="true" />
           <Property Type="Int32" Name="BrandID" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_GetMyOrderDetails_Web_Result">
+          <Property Type="Int32" Name="CustomerOrderID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="Email" Nullable="true" MaxLength="150" />
+          <Property Type="String" Name="Mobile" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Description" Nullable="true" />
+          <Property Type="String" Name="Address" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="Longitude" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Latitude" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LocationURL" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="StatusID" Nullable="true" />
+          <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="OrderID" Nullable="true" />
+          <Property Type="String" Name="AddressType" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="AddressNickName" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="DeliveryArea" Nullable="true" MaxLength="300" />
         </ComplexType>
         <ComplexType Name="sp_getOffers_Result">
           <Property Type="Int32" Name="OfferID" Nullable="false" />
@@ -3803,6 +4147,128 @@
           <Property Type="DateTime" Name="OrderOFDDate" Nullable="true" Precision="23" />
           <Property Type="DateTime" Name="OrderDoneDate" Nullable="true" Precision="23" />
           <Property Type="String" Name="Remarks" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_GetProducts_Web_Result">
+          <Property Type="Int32" Name="ItemID" Nullable="false" />
+          <Property Type="Int32" Name="CategoryID" Nullable="true" />
+          <Property Type="Int32" Name="UnitID" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="true" />
+          <Property Type="String" Name="ArabicName" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="true" />
+          <Property Type="String" Name="Image" Nullable="true" />
+          <Property Type="String" Name="Barcode" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="DisplayOrder" Nullable="true" />
+          <Property Type="Double" Name="Price" Nullable="true" />
+          <Property Type="Double" Name="Cost" Nullable="true" />
+          <Property Type="String" Name="ItemType" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="StatusID" Nullable="true" />
+          <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
+          <Property Type="Double" Name="Calories" Nullable="true" />
+          <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_itemList_Result">
+          <Property Type="Int32" Name="ItemID" Nullable="false" />
+          <Property Type="Int32" Name="CategoryID" Nullable="true" />
+          <Property Type="Int32" Name="UnitID" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="true" />
+          <Property Type="String" Name="ArabicName" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="true" />
+          <Property Type="String" Name="Image" Nullable="true" />
+          <Property Type="String" Name="Barcode" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="DisplayOrder" Nullable="true" />
+          <Property Type="Double" Name="Price" Nullable="true" />
+          <Property Type="Double" Name="Cost" Nullable="true" />
+          <Property Type="String" Name="ItemType" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="StatusID" Nullable="true" />
+          <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
+          <Property Type="Double" Name="Calories" Nullable="true" />
+          <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
+          <Property Type="Int32" Name="Stars" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="sp_itemListselected_Result">
+          <Property Type="Int32" Name="ItemID" Nullable="false" />
+          <Property Type="Int32" Name="CategoryID" Nullable="true" />
+          <Property Type="Int32" Name="UnitID" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="true" />
+          <Property Type="String" Name="ArabicName" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="true" />
+          <Property Type="String" Name="Image" Nullable="true" />
+          <Property Type="String" Name="Barcode" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="DisplayOrder" Nullable="true" />
+          <Property Type="Double" Name="Price" Nullable="true" />
+          <Property Type="Double" Name="Cost" Nullable="true" />
+          <Property Type="String" Name="ItemType" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="StatusID" Nullable="true" />
+          <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
+          <Property Type="Double" Name="Calories" Nullable="true" />
+          <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
+          <Property Type="Int32" Name="Stars" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="sp_itemListselected_Web_Result">
+          <Property Type="Int32" Name="ItemID" Nullable="false" />
+          <Property Type="Int32" Name="CategoryID" Nullable="true" />
+          <Property Type="Int32" Name="UnitID" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="true" />
+          <Property Type="String" Name="ArabicName" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="true" />
+          <Property Type="String" Name="Image" Nullable="true" />
+          <Property Type="String" Name="Barcode" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="DisplayOrder" Nullable="true" />
+          <Property Type="Double" Name="Price" Nullable="true" />
+          <Property Type="Double" Name="Cost" Nullable="true" />
+          <Property Type="String" Name="ItemType" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="StatusID" Nullable="true" />
+          <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
+          <Property Type="Double" Name="Calories" Nullable="true" />
+          <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
+          <Property Type="Int32" Name="Stars" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="sp_login_Web_Result">
+          <Property Type="Int32" Name="CustomerID" Nullable="false" />
+          <Property Type="String" Name="FullName" Nullable="true" MaxLength="200" />
+          <Property Type="String" Name="Email" Nullable="true" MaxLength="150" />
+          <Property Type="String" Name="Mobile" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Image" Nullable="true" />
+          <Property Type="Int32" Name="StatusID" Nullable="true" />
+          <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="LocationID" Nullable="true" />
+          <Property Type="Int32" Name="BrandID" Nullable="true" />
+          <Property Type="String" Name="Password" Nullable="true" MaxLength="250" />
+        </ComplexType>
+        <ComplexType Name="sp_ProductDetails_Web_Result">
+          <Property Type="Int32" Name="ItemID" Nullable="false" />
+          <Property Type="Int32" Name="CategoryID" Nullable="true" />
+          <Property Type="Int32" Name="UnitID" Nullable="true" />
+          <Property Type="String" Name="Name" Nullable="true" />
+          <Property Type="String" Name="ArabicName" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="true" />
+          <Property Type="String" Name="Image" Nullable="true" />
+          <Property Type="String" Name="Barcode" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="SKU" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="DisplayOrder" Nullable="true" />
+          <Property Type="Double" Name="Price" Nullable="true" />
+          <Property Type="Double" Name="Cost" Nullable="true" />
+          <Property Type="String" Name="ItemType" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="LastUpdatedBy" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="LastUpdatedDate" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="StatusID" Nullable="true" />
+          <Property Type="Boolean" Name="IsFeatured" Nullable="true" />
+          <Property Type="Double" Name="Calories" Nullable="true" />
+          <Property Type="Boolean" Name="IsApplyDiscount" Nullable="true" />
+          <Property Type="Int32" Name="Stars" Nullable="false" />
         </ComplexType>
         <ComplexType Name="sp_rptSalesCategorywiseAdmin_Result">
           <Property Type="String" Name="CategoryName" Nullable="true" MaxLength="300" />
@@ -4159,6 +4625,7 @@
                 <ScalarProperty Name="StatusID" ColumnName="StatusID" />
                 <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
                 <ScalarProperty Name="Calories" ColumnName="Calories" />
+                <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4189,6 +4656,8 @@
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="Discounts" ColumnName="Discounts" />
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="IsPickupAllowed" ColumnName="IsPickupAllowed" />
+                <ScalarProperty Name="IsDeliveryAllowed" ColumnName="IsDeliveryAllowed" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -4325,6 +4794,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Reveiws">
+            <EntityTypeMapping TypeName="db_a861ba_madinaModel.Reveiw">
+              <MappingFragment StoreEntitySet="Reveiws">
+                <ScalarProperty Name="ReviewID" ColumnName="ReviewID" />
+                <ScalarProperty Name="Stars" ColumnName="Stars" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Contact" ColumnName="Contact" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Status">
             <EntityTypeMapping TypeName="db_a861ba_madinaModel.Status">
               <MappingFragment StoreEntitySet="Status">
@@ -4435,6 +4918,56 @@
           <FunctionImportMapping FunctionImportName="sp_DeleteModifier" FunctionName="db_a861ba_madinaModel.Store.sp_DeleteModifier" />
           <FunctionImportMapping FunctionImportName="sp_Deleteoffers" FunctionName="db_a861ba_madinaModel.Store.sp_Deleteoffers" />
           <FunctionImportMapping FunctionImportName="sp_DeleteTodaySpecial_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_DeleteTodaySpecial_Admin" />
+          <FunctionImportMapping FunctionImportName="sp_filterCategory_Web" FunctionName="db_a861ba_madinaModel.Store.sp_filterCategory_Web">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_filterCategory_Web_Result">
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="BrandID" ColumnName="BrandID" />
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="Expr1" ColumnName="Expr1" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+                <ScalarProperty Name="ItemImage" ColumnName="ItemImage" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="Expr2" ColumnName="Expr2" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_filterProduct_Web" FunctionName="db_a861ba_madinaModel.Store.sp_filterProduct_Web">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_filterProduct_Web_Result">
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
+                <ScalarProperty Name="Calories" ColumnName="Calories" />
+                <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_getAddons" FunctionName="db_a861ba_madinaModel.Store.sp_getAddons">
             <ResultMapping>
               <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_getAddons_Result">
@@ -4686,6 +5219,24 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_GetCategoryList_Web" FunctionName="db_a861ba_madinaModel.Store.sp_GetCategoryList_Web">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_GetCategoryList_Web_Result">
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="BrandID" ColumnName="BrandID" />
+                <ScalarProperty Name="Row_Counter" ColumnName="Row_Counter" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_getCustomer" FunctionName="db_a861ba_madinaModel.Store.sp_getCustomer">
             <ResultMapping>
               <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_getCustomer_Result">
@@ -4805,6 +5356,7 @@
                 <ScalarProperty Name="StatusID" ColumnName="StatusID" />
                 <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
                 <ScalarProperty Name="Calories" ColumnName="Calories" />
+                <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
                 <ScalarProperty Name="Modifiers" ColumnName="Modifiers" />
                 <ScalarProperty Name="Addons" ColumnName="Addons" />
@@ -4832,6 +5384,7 @@
                 <ScalarProperty Name="StatusID" ColumnName="StatusID" />
                 <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
                 <ScalarProperty Name="Calories" ColumnName="Calories" />
+                <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
               </ComplexTypeMapping>
             </ResultMapping>
@@ -4872,6 +5425,8 @@
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="Discounts" ColumnName="Discounts" />
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="IsPickupAllowed" ColumnName="IsPickupAllowed" />
+                <ScalarProperty Name="IsDeliveryAllowed" ColumnName="IsDeliveryAllowed" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -4902,6 +5457,8 @@
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="Discounts" ColumnName="Discounts" />
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="IsPickupAllowed" ColumnName="IsPickupAllowed" />
+                <ScalarProperty Name="IsDeliveryAllowed" ColumnName="IsDeliveryAllowed" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -4932,6 +5489,8 @@
                 <ScalarProperty Name="Currency" ColumnName="Currency" />
                 <ScalarProperty Name="Discounts" ColumnName="Discounts" />
                 <ScalarProperty Name="Tax" ColumnName="Tax" />
+                <ScalarProperty Name="IsPickupAllowed" ColumnName="IsPickupAllowed" />
+                <ScalarProperty Name="IsDeliveryAllowed" ColumnName="IsDeliveryAllowed" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -4981,6 +5540,28 @@
                 <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
                 <ScalarProperty Name="StatusID" ColumnName="StatusID" />
                 <ScalarProperty Name="BrandID" ColumnName="BrandID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_GetMyOrderDetails_Web" FunctionName="db_a861ba_madinaModel.Store.sp_GetMyOrderDetails_Web">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_GetMyOrderDetails_Web_Result">
+                <ScalarProperty Name="CustomerOrderID" ColumnName="CustomerOrderID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="LocationURL" ColumnName="LocationURL" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="AddressType" ColumnName="AddressType" />
+                <ScalarProperty Name="AddressNickName" ColumnName="AddressNickName" />
+                <ScalarProperty Name="DeliveryArea" ColumnName="DeliveryArea" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
@@ -5044,6 +5625,31 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_GetProducts_Web" FunctionName="db_a861ba_madinaModel.Store.sp_GetProducts_Web">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_GetProducts_Web_Result">
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
+                <ScalarProperty Name="Calories" ColumnName="Calories" />
+                <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="sp_insertAddon_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_insertAddon_Admin" />
           <FunctionImportMapping FunctionImportName="sp_insertAppInfo_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_insertAppInfo_Admin" />
           <FunctionImportMapping FunctionImportName="sp_insertAppsetting_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_insertAppsetting_Admin" />
@@ -5060,6 +5666,132 @@
           <FunctionImportMapping FunctionImportName="sp_insertLocation_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_insertLocation_Admin" />
           <FunctionImportMapping FunctionImportName="sp_insertModifier_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_insertModifier_Admin" />
           <FunctionImportMapping FunctionImportName="sp_insertOffers_Admin" FunctionName="db_a861ba_madinaModel.Store.sp_insertOffers_Admin" />
+          <FunctionImportMapping FunctionImportName="sp_InsertOrder_Web" FunctionName="db_a861ba_madinaModel.Store.sp_InsertOrder_Web" />
+          <FunctionImportMapping FunctionImportName="sp_InsertOrderCheckout_Web" FunctionName="db_a861ba_madinaModel.Store.sp_InsertOrderCheckout_Web" />
+          <FunctionImportMapping FunctionImportName="sp_InsertOrderDetail_Web" FunctionName="db_a861ba_madinaModel.Store.sp_InsertOrderDetail_Web" />
+          <FunctionImportMapping FunctionImportName="sp_InsertReview_Web" FunctionName="db_a861ba_madinaModel.Store.sp_InsertReview_Web" />
+          <FunctionImportMapping FunctionImportName="sp_itemList" FunctionName="db_a861ba_madinaModel.Store.sp_itemList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_itemList_Result">
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
+                <ScalarProperty Name="Calories" ColumnName="Calories" />
+                <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+                <ScalarProperty Name="Stars" ColumnName="Stars" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_itemListselected" FunctionName="db_a861ba_madinaModel.Store.sp_itemListselected">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_itemListselected_Result">
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
+                <ScalarProperty Name="Calories" ColumnName="Calories" />
+                <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+                <ScalarProperty Name="Stars" ColumnName="Stars" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_itemListselected_Web" FunctionName="db_a861ba_madinaModel.Store.sp_itemListselected_Web">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_itemListselected_Web_Result">
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
+                <ScalarProperty Name="Calories" ColumnName="Calories" />
+                <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+                <ScalarProperty Name="Stars" ColumnName="Stars" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_login_Web" FunctionName="db_a861ba_madinaModel.Store.sp_login_Web">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_login_Web_Result">
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="BrandID" ColumnName="BrandID" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_ProductDetails_Web" FunctionName="db_a861ba_madinaModel.Store.sp_ProductDetails_Web">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_ProductDetails_Web_Result">
+                <ScalarProperty Name="ItemID" ColumnName="ItemID" />
+                <ScalarProperty Name="CategoryID" ColumnName="CategoryID" />
+                <ScalarProperty Name="UnitID" ColumnName="UnitID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ArabicName" ColumnName="ArabicName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Image" ColumnName="Image" />
+                <ScalarProperty Name="Barcode" ColumnName="Barcode" />
+                <ScalarProperty Name="SKU" ColumnName="SKU" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Cost" ColumnName="Cost" />
+                <ScalarProperty Name="ItemType" ColumnName="ItemType" />
+                <ScalarProperty Name="LastUpdatedBy" ColumnName="LastUpdatedBy" />
+                <ScalarProperty Name="LastUpdatedDate" ColumnName="LastUpdatedDate" />
+                <ScalarProperty Name="StatusID" ColumnName="StatusID" />
+                <ScalarProperty Name="IsFeatured" ColumnName="IsFeatured" />
+                <ScalarProperty Name="Calories" ColumnName="Calories" />
+                <ScalarProperty Name="IsApplyDiscount" ColumnName="IsApplyDiscount" />
+                <ScalarProperty Name="Stars" ColumnName="Stars" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_register_Web" FunctionName="db_a861ba_madinaModel.Store.sp_register_Web" />
           <FunctionImportMapping FunctionImportName="sp_rptSalesCategorywiseAdmin" FunctionName="db_a861ba_madinaModel.Store.sp_rptSalesCategorywiseAdmin">
             <ResultMapping>
               <ComplexTypeMapping TypeName="db_a861ba_madinaModel.sp_rptSalesCategorywiseAdmin_Result">
